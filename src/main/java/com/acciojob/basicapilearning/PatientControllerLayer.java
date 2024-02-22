@@ -39,7 +39,7 @@ public class PatientControllerLayer {
     }
 
     @PutMapping("/updatePatientInfo")
-    public String updatePatientInfo(@RequestParam("patientId") int id, @RequestParam("name") String name,
+    public String updatePatientInfo(@RequestParam("patientId") Integer id, @RequestParam("name") String name,
                                 @RequestParam("age") Integer age, @RequestParam("disease") String disease)
     {
         return servObj.updatePatient(id, name, age, disease);
