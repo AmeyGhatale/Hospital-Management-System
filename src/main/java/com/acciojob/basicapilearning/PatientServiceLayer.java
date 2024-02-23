@@ -1,5 +1,6 @@
 package com.acciojob.basicapilearning;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -8,27 +9,28 @@ import java.util.Map;
 
 @Service
 public class PatientServiceLayer {
-    PatientRepositoryLayer repoObj = new PatientRepositoryLayer();
+    @Autowired
+    private PatientRepositoryLayer patientRepoObj;
 
     public String addPatientToDb(Patient patient){
-        return repoObj.addPatientToDb(patient);
+        return patientRepoObj.addPatientToDb(patient);
     }
 
     public Patient getPatient(int id){
-        return repoObj.getPatientFromDb(id);
+        return patientRepoObj.getPatientFromDb(id);
     }
 
     public List<Patient> getAllPatients(){
         List<Patient> patientList = new ArrayList<>();
 
-        patientList = repoObj.getAllPatients();
+        patientList = patientRepoObj.getAllPatients();
 
         return patientList;
     }
 
     public Patient getByAge(int age){
         List<Patient> patientList = new ArrayList<>();
-        patientList = repoObj.getAllPatients();
+        patientList = patientRepoObj.getAllPatients();
 
         for(Patient p : patientList){
             if(p.getAge() == age)
@@ -42,7 +44,7 @@ public class PatientServiceLayer {
         patient.setName(name);
         patient.setAge(age);
         patient.setDisease(disease);
-        repoObj.addPatientToDb(patient);
+        patientRepoObj.addPatientToDb(patient);
 
         return "Patient info has been updated";
     }
@@ -64,7 +66,7 @@ public class PatientServiceLayer {
     }
 
     public String deletePatient(int id){
-        Map<Integer, Patient> patient = repoObj.getPatientDb();
+        Map<Integer, Patient> patient = patientRepoObj.getPatientDb();
         patient.remove(id);
         return "Patient has been removed";
     }

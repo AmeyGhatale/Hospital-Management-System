@@ -12,8 +12,10 @@ public class PatientRepositoryLayer {
 
     public String addPatientToDb(Patient patient){
         int id = patient.getPatientId();
-        patientDb.put(id, patient);
+        if(patientDb.containsKey(id))
+            return "Patient has already been added" ;
 
+        patientDb.put(id, patient);
         return "Patient has been added to DB";
     }
 

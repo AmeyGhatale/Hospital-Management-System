@@ -1,5 +1,8 @@
 package com.acciojob.basicapilearning;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -7,64 +10,68 @@ import java.util.List;
 
 @RestController
 public class PatientControllerLayer {
-    PatientServiceLayer servObj = new PatientServiceLayer();
+    @Autowired
+    private PatientServiceLayer patientServObj;
 
     @PostMapping("/addPatient")
-    public String addPatient(@RequestBody Patient patient)
+    public ResponseEntity<String> addPatient(@RequestBody Patient patient)
     {
-        String result = servObj.addPatientToDb(patient);
-        return result;
+        String result = patientServObj.addPatientToDb(patient);
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
-    @GetMapping("/getPatient")
-    public Patient getPatient(@RequestParam("patientId") int id)
+    @GetMapping("/getPatient/{patientId}/")
+    public ResponseEntity<Patient> getPatient(@PathVariable("patientId") int id)
     {
-        return servObj.getPatient(id);
+        Patient patient =  patientServObj.getPatient(id);
+        return new ResponseEntity<>(patient, HttpStatus.OK);
     }
 
     @GetMapping("/getAllPatientsList")
     public void getAllPatients(){
             List<Patient> patientList = new ArrayList<>();
-            patientList = servObj.getAllPatients();
+            patientList = patientServObj.getAllPatients();
 
             for(Patient p : patientList)
                 System.out.println(p.toString());
     }
 
     @GetMapping("/getByAge")
-    public Patient getByAge(@RequestParam("age") int age)
+    public ResponseEntity<Patient> getByAge(@RequestParam("age") int age)
     {
-        Patient patient = servObj.getByAge(age);
-        return patient;
+        Patient patient = patientServObj.getByAge(age);
+        return new ResponseEntity<>(patient, HttpStatus.OK);
     }
 
     @PutMapping("/updatePatientInfo")
-    public String updatePatientInfo(@RequestParam("patientId") Integer id, @RequestParam("name") String name,
+    public ResponseEntity<String> updatePatientInfo(@RequestParam("patientId") Integer id, @RequestParam("name") String name,
                                 @RequestParam("age") Integer age, @RequestParam("disease") String disease)
     {
-        return servObj.updatePatient(id, name, age, disease);
+        String result =  patientServObj.updatePatient(id, name, age, disease);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PatchMapping("/updatePatientUsingPatch")
-    public String updatePatient(@RequestParam("patientId") Integer id, @RequestParam(value = "name", required = false) String name,
+    public ResponseEntity<String> updatePatient(@RequestParam("patientId") Integer id, @RequestParam(value = "name", required = false) String name,
                                 @RequestParam(value = "age", required = false) Integer age,
                                 @RequestParam(value = "disease", required = false) String disease)
     {
         String response;
         if(name!=null)
-            response = servObj.updatePatientName(id, name);
+            response = patientServObj.updatePatientName(id, name);
         else if(disease!=null)
-            response = servObj.updatePatientDisease(id, disease);
+            response = patientServObj.updatePatientDisease(id, disease);
         else
-            response = servObj.updatePatientAge(id, age);
+            response = patientServObj.updatePatientAge(id, age);
 
-        return response;
+        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/deletePatient")
-    public String deletePatient(@RequestParam("patientId") int id)
+    public ResponseEntity<String > deletePatient(@RequestParam("patientId") int id)
     {
-        return servObj.deletePatient(id);
+        String response =  patientServObj.deletePatient(id);
+        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
 }
